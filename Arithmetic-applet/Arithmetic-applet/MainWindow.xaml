@@ -1,0 +1,33 @@
+﻿<Window x:Class="Arithmetic_applet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Arithmetic_applet"
+        mc:Ignorable="d"
+        Title="算数小程序" Height="450" Width="740.8">
+    <Grid Margin="0,0,3.4,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="84*"/>
+            <ColumnDefinition Width="24*"/>
+            <ColumnDefinition Width="14*"/>
+            <ColumnDefinition Width="31*"/>
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="394*"/>
+            <ColumnDefinition Width="138*"/>
+        </Grid.ColumnDefinitions>
+        <Label Content="题目：" HorizontalAlignment="Left" Margin="23.6,47,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.517,0.531" Width="53" Grid.Column="2"/>
+        <Label x:Name="questionBox" Content="" HorizontalAlignment="Left" Margin="76.6,47,0,0" VerticalAlignment="Top" Width="74" Grid.ColumnSpan="4" Grid.Column="2"/>
+        <TextBox x:Name="answerBox" HorizontalAlignment="Right" Height="23" Margin="0,49,334.204,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="54" IsEnabled="False" Grid.Column="7"/>
+        <Button x:Name="confirmButton" Content="确定" HorizontalAlignment="Left" Margin="92.196,51,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.208,0.435" Height="18" IsEnabled="False" Grid.Column="7" Click="answer_operation"/>
+        <Button x:Name="submitButton" Content="交卷" HorizontalAlignment="Left" Margin="301.196,51,0,0" VerticalAlignment="Top" Width="75" Height="18" IsEnabled="False" Grid.Column="7"/>
+        <Button x:Name="againButton" Content="再来一次" HorizontalAlignment="Left" Margin="11.796,51,0,0" VerticalAlignment="Top" Width="75" RenderTransformOrigin="0.837,0.348" Height="18" IsEnabled="False" Grid.Column="8"/>
+        <ListBox x:Name="answerList" HorizontalAlignment="Left" Height="261" Margin="23.6,102,0,0" VerticalAlignment="Top" Width="317" IsEnabled="False" Grid.ColumnSpan="6" Grid.Column="2"/>
+        <TextBlock x:Name="resultBox" HorizontalAlignment="Left" Margin="197.196,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="92" Width="200" Text="当前未开始" IsEnabled="False" Grid.Column="7" Grid.ColumnSpan="2"/>
+        <Label Content="=" HorizontalAlignment="Left" Margin="4.796,47,0,0" VerticalAlignment="Top" Grid.Column="6" Grid.ColumnSpan="2"/>
+        <Button x:Name="beginButton" Content="开始" HorizontalAlignment="Left" Margin="193.196,51,0,0" VerticalAlignment="Top" Width="75" Grid.Column="7" Click="begin_click" LostKeyboardFocus="set_question"/>
+
+    </Grid>
+</Window>
