@@ -42,9 +42,11 @@ namespace Arithmetic_applet
             beginButton.IsEnabled = false;
             confirmButton.IsEnabled = true;
             submitButton.IsEnabled = true;
-            againButton.IsEnabled = true;
             answerList.IsEnabled = true;
             resultBox.IsEnabled = true;
+            //清空答案框
+            answerList.Items.Clear();
+            resultBox.Text = "等待答题交卷";
         }
 
         private void set_question(object sender, RoutedEventArgs e)
@@ -102,23 +104,64 @@ namespace Arithmetic_applet
         {
             String inListContent;//写入列表框的内容
             String content = answerBox.Text;//获取用户输入内容
-            int userAnswer = Int32.Parse(content);
-
-            if(publicValue.questionAnswer == userAnswer)
+            if (content.Length == 0)//检测用户输入是否为空
             {
-                inListContent = publicValue.formula + "=" + userAnswer.ToString() + "正确";
-                answerList.Items.Add(inListContent);
-                answerBox.Text = "";
+                MessageBox.Show(mainWindow, "答案不能为空");
                 answerBox.Focus();
             }
             else
             {
-                inListContent = publicValue.formula + "=" + userAnswer.ToString() + "错误\t" + "正确答案：" + publicValue.questionAnswer.ToString();
-                answerList.Items.Add(inListContent);
-                answerBox.Text = "";
-                answerBox.Focus();
+                int userAnswer = Int32.Parse(content);
+
+                if (publicValue.questionAnswer == userAnswer)
+                {
+                    inListContent = publicValue.formula + "=" + userAnswer.ToString() + "正确";
+                    answerList.Items.Insert(0, inListContent);
+                    //总做题数和正确题数计数
+                    publicValue.sumDoCount++;
+                    publicValue.rightQuestionCount++;
+                    answerBox.Text = "";
+                    answerBox.Focus();
+                }
+                else
+                {
+                    inListContent = publicValue.formula + "=" + userAnswer.ToString() + "错误\t" + "正确答案：" + publicValue.questionAnswer.ToString();
+                    answerList.Items.Insert(0, inListContent);
+                    //总做题数和错误题数计数
+                    publicValue.sumDoCount++;
+                    publicValue.errorQuestionCount++;
+                    answerBox.Text = "";
+                    answerBox.Focus();
+                }
+                set_question(sender, e);//重新设置题目
             }
-            set_question(sender, e);//重新设置题目
+        }
+
+        private void submit_answer(object sender, RoutedEventArgs e)
+        {
+            int sumDo = publicValue.sumDoCount;
+            int rightDo = publicValue.rightQuestionCount;
+            int errorDo = publicValue.errorQuestionCount;
+            float correctRate;
+            //浮点数去除多余的小数
+            correctRate = (float)rightDo / sumDo;
+            correctRate = (int)(correctRate * 10000);
+            correctRate = (float)correctRate / 100;
+            //计数器归零
+            publicValue.sumDoCount = 0;
+            publicValue.rightQuestionCount = 0;
+            publicValue.errorQuestionCount = 0;
+            //旁边提示框展示数据统计
+            resultBox.Text = "总题数：" + sumDo.ToString() + "\n"
+                             + "正确数：" + rightDo.ToString() + "\n"
+                             + "错误数：" + errorDo.ToString() + "\n"
+                             + "正确率：" + correctRate.ToString() + "%\n"
+                             ;
+
+            answerBox.IsEnabled = false;
+            beginButton.IsEnabled = true;
+            confirmButton.IsEnabled = false;
+            submitButton.IsEnabled = false;
         }
     }
 }
