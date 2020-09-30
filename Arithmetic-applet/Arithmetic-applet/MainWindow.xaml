@@ -26,7 +26,7 @@
         <ListBox x:Name="answerList" HorizontalAlignment="Left" Height="261" Margin="24,102,0,0" VerticalAlignment="Top" Width="317" IsEnabled="False" Grid.ColumnSpan="6" Grid.Column="2"/>
         <TextBlock x:Name="resultBox" HorizontalAlignment="Left" Margin="209.2,102,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="92" Width="179" Text="等待答题交卷" IsEnabled="False" Grid.Column="7"/>
         <Label Content="=" HorizontalAlignment="Left" Margin="17,47,0,0" VerticalAlignment="Top" Grid.Column="6" Grid.ColumnSpan="2" Height="26" Width="19"/>
-        <Button x:Name="beginButton" Content="开始" HorizontalAlignment="Left" Margin="204.8,51,0,0" VerticalAlignment="Top" Width="75" Grid.Column="7" Click="begin_click" LostKeyboardFocus="set_question" Height="18"/>
+        <Button x:Name="beginButton" Content="开始" HorizontalAlignment="Left" Margin="204.8,51,0,0" VerticalAlignment="Top" Width="75" Grid.Column="7" Click="begin_click" Height="18"/>
 
     </Grid>
 </Window>

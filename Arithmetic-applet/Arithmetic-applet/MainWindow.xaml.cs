@@ -47,6 +47,7 @@ namespace Arithmetic_applet
             //清空答案框
             answerList.Items.Clear();
             resultBox.Text = "等待答题交卷";
+            set_question(sender, e);
         }
 
         private void set_question(object sender, RoutedEventArgs e)
