@@ -18,18 +18,9 @@ namespace Arithmetic_applet
     /// <summary>
     /// MainWindow.xaml 的交互逻辑
     /// </summary>
-    public class publicValue
-    {
-        public static String formula;//式子
-        public static int questionAnswer;//正确答案
-        public static int questionUserAnswer;//用户答案
-        public static int sumDoCount = 0;//计数器，当前做了多少道题
-        public static int rightQuestionCount = 0;//正确答案计数器
-        public static int errorQuestionCount = 0;//错误答案计数器
-        public static int score = 0;//得分
-    }
     public partial class MainWindow : Window
     {
+        Arithmetic arithmetic;
         public MainWindow()
         {
             InitializeComponent();
@@ -37,6 +28,7 @@ namespace Arithmetic_applet
 
         private void begin_click(object sender, RoutedEventArgs e)
         {
+            arithmetic = new Arithmetic();
             answerBox.IsEnabled = true;
             beginButton.IsEnabled = false;
             confirmButton.IsEnabled = true;
@@ -51,29 +43,24 @@ namespace Arithmetic_applet
 
         private void set_question(object sender, RoutedEventArgs e)
         {
-            Arithmetic arithmetic = new Arithmetic();
-            int[] formula = arithmetic.SetFormula();
-            switch (formula[1])
+            arithmetic.SetFormula();
+            switch (arithmetic.formula[1])
             {
                 case 0://+
-                    publicValue.questionAnswer = formula[3];
-                    publicValue.formula = formula[0].ToString() + " + " + formula[2].ToString();
-                    questionBox.Content = publicValue.formula;
+                    arithmetic.strFormula = arithmetic.formula[0].ToString() + " + " + arithmetic.formula[2].ToString();
+                    questionBox.Content = arithmetic.strFormula;
                     break;
                 case 1://-
-                    publicValue.questionAnswer = formula[3];
-                    publicValue.formula = formula[0].ToString() + " - " + formula[2].ToString();
-                    questionBox.Content = publicValue.formula;
+                    arithmetic.strFormula = arithmetic.formula[0].ToString() + " - " + arithmetic.formula[2].ToString();
+                    questionBox.Content = arithmetic.strFormula;
                     break;
                 case 2://*
-                    publicValue.questionAnswer = formula[3];
-                    publicValue.formula = formula[0].ToString() + " × " + formula[2].ToString();
-                    questionBox.Content = publicValue.formula;
+                    arithmetic.strFormula = arithmetic.formula[0].ToString() + " × " + arithmetic.formula[2].ToString();
+                    questionBox.Content = arithmetic.strFormula;
                     break;
                 case 3:///
-                    publicValue.questionAnswer = formula[3];
-                    publicValue.formula = formula[0].ToString() + " ÷ " + formula[2].ToString();
-                    questionBox.Content = publicValue.formula;
+                    arithmetic.strFormula = arithmetic.formula[0].ToString() + " ÷ " + arithmetic.formula[2].ToString();
+                    questionBox.Content = arithmetic.strFormula;
                     break;
                 default:
                     break;
@@ -84,7 +71,6 @@ namespace Arithmetic_applet
         {
             String inListContent;//写入列表框的内容
             String content = answerBox.Text;//获取用户输入内容
-            Arithmetic arithmetic = new Arithmetic();
             if (content.Length == 0)//检测用户输入是否为空
             {
                 MessageBox.Show(mainWindow, "答案不能为空");
@@ -94,23 +80,22 @@ namespace Arithmetic_applet
             {
                 int userAnswer = Int32.Parse(content);
 
-                if (arithmetic.CheckAnswer(publicValue.questionAnswer, userAnswer))
+                if (arithmetic.CheckAnswer(userAnswer))
                 {
-                    inListContent = publicValue.formula + " = " + userAnswer.ToString() + " 正确";
+                    inListContent = arithmetic.strFormula + " = " + userAnswer.ToString() + " 正确";
                     answerList.Items.Insert(0, inListContent);
                     //总做题数和正确题数计数
-                    publicValue.sumDoCount++;
-                    publicValue.rightQuestionCount++;
+                    arithmetic.rightCount++;
+                    arithmetic.sumCount++;
                     answerBox.Text = "";
                     answerBox.Focus();
                 }
                 else
                 {
-                    inListContent = publicValue.formula + " = " + userAnswer.ToString() + " 错误\t" + "正确答案：" + publicValue.questionAnswer.ToString();
+                    inListContent = arithmetic.strFormula + " = " + userAnswer.ToString() + " 错误\t" + "正确答案：" + arithmetic.formula[3].ToString();
                     answerList.Items.Insert(0, inListContent);
-                    //总做题数和错误题数计数
-                    publicValue.sumDoCount++;
-                    publicValue.errorQuestionCount++;
+                    //总做题数计数
+                    arithmetic.sumCount++;
                     answerBox.Text = "";
                     answerBox.Focus();
                 }
@@ -120,22 +105,15 @@ namespace Arithmetic_applet
 
         private void submit_answer(object sender, RoutedEventArgs e)
         {
-            int sumDo = publicValue.sumDoCount;
-            int rightDo = publicValue.rightQuestionCount;
-            int errorDo = publicValue.errorQuestionCount;
-            float correctRate;
+            float correctRate = arithmetic.GetCorrectRate();
             //浮点数去除多余的小数
-            correctRate = (float)rightDo / sumDo;
             correctRate = (int)(correctRate * 10000);
             correctRate = (float)correctRate / 100;
             //计数器归零
-            publicValue.sumDoCount = 0;
-            publicValue.rightQuestionCount = 0;
-            publicValue.errorQuestionCount = 0;
             //旁边提示框展示数据统计
-            resultBox.Text = "总题数：" + sumDo.ToString() + "\n"
-                             + "正确数：" + rightDo.ToString() + "\n"
-                             + "错误数：" + errorDo.ToString() + "\n"
+            resultBox.Text = "总题数：" + arithmetic.sumCount.ToString() + "\n"
+                             + "正确数：" + arithmetic.rightCount.ToString() + "\n"
+                             + "错误数：" + (arithmetic.sumCount - arithmetic.rightCount).ToString() + "\n"
                              + "正确率：" + correctRate.ToString() + "%\n"
                              ;
 
@@ -146,12 +124,14 @@ namespace Arithmetic_applet
         }
     }
 }
-public class Arithmetic{
-    /*private int rightCount = 0;//正确题数
-    private int sumCount = 0;//总题数*/
-    public int[] SetFormula()//设置式子
+public class Arithmetic
+{
+    public int rightCount = 0;//正确题数
+    public int sumCount = 0;//总题数
+    public int[] formula = new int[4];//保存式子的数组
+    public String strFormula;
+    public void SetFormula()//设置式子
     {
-        int[] formula = new int[4];//保存式子的数组
         int firstNumber, secondNumber;
         int symbols;
 
@@ -192,11 +172,10 @@ public class Arithmetic{
                 break;
             }
         }
-        return formula;
     }
-    public bool CheckAnswer(int a, int b)//进行答案的判断
+    public bool CheckAnswer(int inNumber)//进行答案的判断
     {
-        if(a == b)
+        if (inNumber == formula[3])
         {
             return true;
         }
@@ -204,5 +183,9 @@ public class Arithmetic{
         {
             return false;
         }
+    }
+    public float GetCorrectRate()//返回正确率
+    {
+        return (float)rightCount / (float)sumCount;
     }
 }
